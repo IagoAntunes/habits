@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:habits/core/colors/colors.dart';
+import 'package:habits/core/months/months.dart';
+import 'package:habits/src/features/dayTasks/day_tasks_page.dart';
+import 'package:habits/src/models/month_model.dart';
+import 'package:habits/src/models/task_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +14,89 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late MonthModel month;
+  List<TaskModel> listTask = [];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  @override
+  void initState() {
+    super.initState();
+    int currentMonth = DateTime.now().month;
+    month = listMonths.where((element) => element.id == currentMonth).first;
+    _getData();
+  }
+
+  _getData() async {
+    var snapshot = await firestore.collection('habits').get();
+    listTask = [];
+    month.list = [];
+    for (var doc in snapshot.docs) {
+      listTask.add(TaskModel.fromMap(doc.data()));
+    }
+
+    for (var task in listTask) {
+      if (task.date.month == month.id) {
+        month.list.add(task);
+      }
+    }
+    return true;
+  }
+
+  Color _frequencyBorderColor(int index) {
+    var listDay = month.list.where((element) => element.date.day == index + 1);
+    if (listDay.isEmpty) {
+      return AppColors.greymed;
+    } else {
+      if (listDay.where((element) => element.isFinished == true).length == 1) {
+        return AppColors.purpleb1;
+      } else if (listDay
+              .where((element) => element.isFinished == true)
+              .length ==
+          2) {
+        return AppColors.purpleb2;
+      } else if (listDay
+              .where((element) => element.isFinished == true)
+              .length ==
+          3) {
+        return AppColors.purpleb3;
+      } else if (listDay
+              .where((element) => element.isFinished == true)
+              .length ==
+          4) {
+        return AppColors.purpleb4;
+      } else {
+        return AppColors.purpleb5;
+      }
+    }
+  }
+
+  Color _frequencyBackgroundColor(int index) {
+    var listDay = month.list.where((element) => element.date.day == index + 1);
+    if (listDay.isEmpty) {
+      return AppColors.greyDark;
+    } else {
+      if (listDay.where((element) => element.isFinished == true).length == 1) {
+        return AppColors.purple1;
+      } else if (listDay
+              .where((element) => element.isFinished == true)
+              .length ==
+          2) {
+        return AppColors.purple2;
+      } else if (listDay
+              .where((element) => element.isFinished == true)
+              .length ==
+          3) {
+        return AppColors.purple3;
+      } else if (listDay
+              .where((element) => element.isFinished == true)
+              .length ==
+          4) {
+        return AppColors.purple4;
+      } else {
+        return AppColors.purple5;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +215,17 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DayTasksPage(
+                              index: 1,
+                              month: month,
+                            ),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
@@ -162,7 +258,52 @@ class _HomePageState extends State<HomePage> {
                     )
                   ],
                 ),
-              )
+              ),
+              FutureBuilder(
+                  future: _getData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Expanded(
+                        child: GridView.count(
+                          crossAxisCount: 5,
+                          children: List.generate(month.days, (index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DayTasksPage(
+                                        index: index,
+                                        month: month,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    color: _frequencyBackgroundColor(index),
+                                    border: Border.all(
+                                      width: 3,
+                                      color: _frequencyBorderColor(index),
+                                    ),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  }),
             ],
           ),
         ),

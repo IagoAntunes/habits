@@ -3,8 +3,13 @@ import 'package:flutter/animation.dart';
 class AppColors {
   static Color background = Color(0xff09090A);
 
+  static Color white = Color(0xffffffff);
+
   static Color greyDark = Color(0xff18181B);
   static Color greymed = Color(0xff27272A);
+  static Color greyLight = Color(0xffA1A1AA);
+
+  static Color green = Color(0xff22C55E);
 
   static Color purple1 = Color(0xff4C1D95);
   static Color purpleb1 = Color(0xff6D28D9);

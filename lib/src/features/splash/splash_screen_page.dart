@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:habits/core/colors/colors.dart';
 import 'package:habits/src/features/home/home_page.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,14 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 4)).then((_) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
-    });
+    Future.delayed(Duration(seconds: 4)).then((_) {});
   }
 
   @override
@@ -33,6 +27,16 @@ class _SplashScreenState extends State<SplashScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.yellow,
+              child: Container(
+                height: 20,
+                width: 100,
+                color: Colors.white,
+                child: Text("Ola mundo"),
+              ),
+            ),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
