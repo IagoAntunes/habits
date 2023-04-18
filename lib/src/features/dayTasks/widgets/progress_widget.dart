@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:habits/src/models/task_model.dart';
 
 import '../../../../core/colors/colors.dart';
+import '../../../models/habit_model.dart';
 
 class ProgressIndicadorWidget extends StatelessWidget {
   ProgressIndicadorWidget({
     super.key,
     required this.listTask,
   });
-  List<TaskModel> listTask;
+  List<HabitModel> listTask;
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 15,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: AppColors.greymed,
         borderRadius: const BorderRadius.all(
           Radius.circular(6),
         ),

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-class TaskModel {
+class HabitModel {
   String id;
   String description;
   DateTime date;
   bool isFinished;
-  TaskModel({
+  HabitModel({
     required this.id,
     required this.description,
     required this.date,
@@ -22,8 +22,8 @@ class TaskModel {
     };
   }
 
-  factory TaskModel.fromMap(Map<String, dynamic> map) {
-    return TaskModel(
+  factory HabitModel.fromMap(Map<String, dynamic> map) {
+    return HabitModel(
       id: map['id'] as String,
       description: map['description'] as String,
       date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
@@ -33,6 +33,6 @@ class TaskModel {
 
   String toJson() => json.encode(toMap());
 
-  factory TaskModel.fromJson(String source) =>
-      TaskModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory HabitModel.fromJson(String source) =>
+      HabitModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

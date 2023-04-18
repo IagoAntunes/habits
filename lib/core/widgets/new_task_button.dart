@@ -14,6 +14,7 @@ class NewTaskButtonWidget extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -33,7 +34,7 @@ class NewTaskButtonWidget extends StatelessWidget {
             ),
             const SizedBox(width: 5),
             const Text(
-              'Novo',
+              'New',
               style: TextStyle(
                 fontSize: 16,
               ),

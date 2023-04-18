@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habits/core/colors/colors.dart';
 import 'package:habits/core/months/months.dart';
-import 'package:habits/core/widgets/new_task_button.dart';
 import 'package:habits/src/features/dayTasks/day_tasks_page.dart';
+import 'package:habits/src/features/home/controller/home_controller.dart';
+import 'package:habits/src/features/home/widgets/days_week_widget.dart';
+import 'package:habits/src/features/home/widgets/head_habits.dart';
+import 'package:habits/src/features/home/widgets/squares_widget.dart';
 import 'package:habits/src/models/month_model.dart';
-import 'package:habits/src/models/task_model.dart';
+import 'package:habits/src/models/habit_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,14 +21,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late MonthModel month;
-  List<TaskModel> listTask = [];
+  List<HabitModel> listTask = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late StreamSubscription listener;
+  HomeController homeController = HomeController();
   @override
   void initState() {
     super.initState();
-    int currentMonth = DateTime.now().month;
-    month = listMonths.where((element) => element.id == currentMonth).first;
-    _getData();
+    month =
+        listMonths.where((element) => element.id == DateTime.now().month).first;
+    addListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    listener.cancel();
   }
 
   _getData() async {
@@ -31,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     listTask = [];
     month.list = [];
     for (var doc in snapshot.docs) {
-      listTask.add(TaskModel.fromMap(doc.data()));
+      listTask.add(HabitModel.fromMap(doc.data()));
     }
 
     for (var task in listTask) {
@@ -39,83 +52,14 @@ class _HomePageState extends State<HomePage> {
         month.list.add(task);
       }
     }
+    setState(() {});
     return true;
   }
 
-  Color _frequencyBorderColor(int index) {
-    var listDay = month.list.where((element) => element.date.day == index + 1);
-    if (listDay.isEmpty) {
-      return AppColors.greymed;
-    } else {
-      if (listDay.where((element) => element.isFinished == true).length == 1) {
-        return AppColors.purpleb1;
-      } else if (listDay
-              .where((element) => element.isFinished == true)
-              .length ==
-          2) {
-        return AppColors.purpleb2;
-      } else if (listDay
-              .where((element) => element.isFinished == true)
-              .length ==
-          3) {
-        return AppColors.purpleb3;
-      } else if (listDay
-              .where((element) => element.isFinished == true)
-              .length ==
-          4) {
-        return AppColors.purpleb4;
-      } else {
-        return AppColors.purpleb5;
-      }
-    }
-  }
-
-  Color _frequencyBackgroundColor(int index) {
-    var listDay = month.list.where((element) => element.date.day == index + 1);
-    if (listDay.isEmpty) {
-      return AppColors.greyDark;
-    } else {
-      if (listDay.where((element) => element.isFinished == true).length == 1) {
-        return AppColors.purple1;
-      } else if (listDay
-              .where((element) => element.isFinished == true)
-              .length ==
-          2) {
-        return AppColors.purple2;
-      } else if (listDay
-              .where((element) => element.isFinished == true)
-              .length ==
-          3) {
-        return AppColors.purple3;
-      } else if (listDay
-              .where((element) => element.isFinished == true)
-              .length ==
-          4) {
-        return AppColors.purple4;
-      } else {
-        return AppColors.purple5;
-      }
-    }
-  }
-
-  List<TaskModel> getDaysFilter(int index) {
-    List<TaskModel> listAux = [];
-    for (var task in month.list) {
-      if (task.date.day == index + 1) {
-        listAux.add(task);
-      }
-    }
-    return listAux;
-  }
-
-  List<TaskModel> getDaysFilterCurrent() {
-    List<TaskModel> listAux = [];
-    for (var task in month.list) {
-      if (task.date.day == DateTime.now().day) {
-        listAux.add(task);
-      }
-    }
-    return listAux;
+  void addListeners() async {
+    listener = firestore.collection('habits').snapshots().listen((snapshot) {
+      _getData();
+    });
   }
 
   @override
@@ -124,178 +68,71 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(30),
+          padding: const EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.greyDark,
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.greymed,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.purple1,
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.purpleb1,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.purple2,
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.purpleb2,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.purple3,
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.purpleb3,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.purple4,
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.purpleb4,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Container(
-                    height: 20,
-                    width: 20,
-                    decoration: BoxDecoration(
-                      color: AppColors.purple5,
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.purpleb5,
-                      ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'habits',
-                      style: TextStyle(
-                        fontSize: 40,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    NewTaskButtonWidget(onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DayTasksPage(
-                            day: DateTime.now().day,
-                            month: month,
-                            listTask: getDaysFilterCurrent(),
-                          ),
-                        ),
-                      );
-                    })
-                  ],
-                ),
-              ),
+              const SquaresLine(),
+              HeadHabits(month: month, homeController: homeController),
+              const SizedBox(height: 30),
+              const DaysWeekWidget(),
               FutureBuilder(
-                  future: _getData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Expanded(
-                        child: GridView.count(
-                          crossAxisCount: 5,
-                          children: List.generate(month.days, (index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DayTasksPage(
-                                        day: index,
-                                        month: month,
-                                        listTask: getDaysFilter(index),
-                                      ),
+                future: _getData(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 7,
+                        children: List.generate(month.days, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DayTasksPage(
+                                      day: index,
+                                      month: month,
+                                      listTask: homeController.getDaysFilter(
+                                          index, month),
                                     ),
-                                  );
-                                },
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    color: _frequencyBackgroundColor(index),
-                                    border: Border.all(
-                                      width: 3,
-                                      color: _frequencyBorderColor(index),
-                                    ),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  color: homeController
+                                      .frequencyBackgroundColor(index, month),
+                                  border: Border.all(
+                                    width:
+                                        index + 1 == DateTime.now().day ? 5 : 3,
+                                    color: index + 1 == DateTime.now().day
+                                        ? Colors.white
+                                        : homeController.frequencyBorderColor(
+                                            index, month),
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(12),
                                   ),
                                 ),
                               ),
-                            );
-                          }),
-                        ),
-                      );
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  }),
+                            ),
+                          );
+                        }),
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.purple1,
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

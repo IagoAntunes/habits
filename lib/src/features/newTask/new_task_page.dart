@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habits/core/colors/colors.dart';
-import 'package:habits/src/models/task_model.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../models/habit_model.dart';
 
 class NewTaskPage extends StatelessWidget {
   NewTaskPage({super.key});
@@ -23,7 +24,7 @@ class NewTaskPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Criar Tarefa',
+                'Create Habit',
                 style: TextStyle(
                   fontSize: 32,
                   color: Colors.white,
@@ -32,7 +33,7 @@ class NewTaskPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               const Text(
-                'Qual sua tarefa ?',
+                'What\'s your habit?',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.white,
@@ -56,7 +57,7 @@ class NewTaskPage extends StatelessWidget {
                   controller: controller,
                   style: TextStyle(color: AppColors.greyLight),
                   decoration: InputDecoration(
-                    hintText: 'Estudar, correr, etc...',
+                    hintText: 'study, run...',
                     border: InputBorder.none,
                     hintStyle: TextStyle(color: AppColors.greyLight),
                   ),
@@ -69,7 +70,7 @@ class NewTaskPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.green),
                   onPressed: () async {
-                    TaskModel task = TaskModel(
+                    HabitModel task = HabitModel(
                       id: const Uuid().v1(),
                       description: controller.text,
                       date: DateTime.now(),
@@ -87,7 +88,7 @@ class NewTaskPage extends StatelessWidget {
                       Icon(Icons.check),
                       SizedBox(width: 5),
                       Text(
-                        "Confirmar",
+                        "Save",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
