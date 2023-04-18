@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habits/src/features/dayTasks/widgets/progress_widget.dart';
 import 'package:habits/src/features/newTask/newTask_page.dart';
 import 'package:habits/src/models/month_model.dart';
 import 'package:habits/src/models/task_model.dart';
@@ -6,28 +7,23 @@ import 'package:habits/src/models/task_model.dart';
 import '../../../core/colors/colors.dart';
 
 class DayTasksPage extends StatefulWidget {
-  DayTasksPage({
+  const DayTasksPage({
     super.key,
-    required this.index,
     required this.month,
+    required this.day,
+    required this.listTask,
   });
-  MonthModel month;
-  int index;
+  final int day;
+  final MonthModel month;
+  final List<TaskModel> listTask;
   @override
   State<DayTasksPage> createState() => _DayTasksPageState();
 }
 
 class _DayTasksPageState extends State<DayTasksPage> {
-  List<TaskModel> listTask = [];
   @override
   void initState() {
     super.initState();
-
-    for (var task in widget.month.list) {
-      if (task.date.day == widget.index + 1) {
-        listTask.add(task);
-      }
-    }
   }
 
   @override
@@ -51,30 +47,19 @@ class _DayTasksPageState extends State<DayTasksPage> {
               ),
             ),
             Text(
-              '${(widget.index + 1).toString().padLeft(2, '0')}/${widget.month.id.toString().padLeft(2, '0')}',
+              '${(widget.day + 1).toString().padLeft(2, '0')}/${widget.month.id.toString().padLeft(2, '0')}',
               style: TextStyle(
                 fontSize: 36,
                 color: AppColors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            LinearProgressIndicator(
-                minHeight: 10,
-                color: AppColors.purple3,
-                backgroundColor: AppColors.greymed,
-                value: listTask.isEmpty
-                    ? 0
-                    : (((listTask)
-                                    .where(
-                                        (element) => element.isFinished == true)
-                                    .length *
-                                100) /
-                            listTask.length) /
-                        100),
+            const SizedBox(height: 25),
+            ProgressIndicadorWidget(listTask: widget.listTask),
             const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
-                itemCount: listTask.length,
+                itemCount: widget.listTask.length,
                 itemBuilder: (context, index) => Row(
                   children: [
                     Transform.scale(
@@ -83,15 +68,28 @@ class _DayTasksPageState extends State<DayTasksPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        value: listTask[index].isFinished,
-                        onChanged: (value) {},
+                        value: widget.listTask[index].isFinished,
+                        onChanged: (value) {
+                          setState(() {
+                            widget.listTask[index].isFinished =
+                                !widget.listTask[index].isFinished;
+                          });
+                        },
                         checkColor: AppColors.white,
                         activeColor: AppColors.green,
+                        fillColor: MaterialStateProperty.resolveWith<Color>(
+                          (Set<MaterialState> states) {
+                            if (widget.listTask[index].isFinished) {
+                              return AppColors.green;
+                            }
+                            return AppColors.greyLight;
+                          },
+                        ),
                       ),
                     ),
-                    const Text(
-                      "Recieve Mail",
-                      style: TextStyle(
+                    Text(
+                      widget.listTask[index].description,
+                      style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
@@ -112,7 +110,12 @@ class _DayTasksPageState extends State<DayTasksPage> {
             MaterialPageRoute(
               builder: (context) => NewTaskPage(),
             ),
-          );
+          ).then((value) {
+            if (value != null) {
+              widget.listTask.add(value);
+              setState(() {});
+            }
+          });
         },
         child: const Icon(Icons.add),
       ),

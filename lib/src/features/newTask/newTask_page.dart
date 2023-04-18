@@ -70,15 +70,16 @@ class NewTaskPage extends StatelessWidget {
                       backgroundColor: AppColors.green),
                   onPressed: () async {
                     TaskModel task = TaskModel(
+                      id: const Uuid().v1(),
                       description: controller.text,
                       date: DateTime.now(),
                       isFinished: false,
                     );
                     await firestore
                         .collection('habits')
-                        .doc(Uuid().v1())
+                        .doc(task.id)
                         .set(task.toMap());
-                    Navigator.pop(context);
+                    Navigator.pop(context, task);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

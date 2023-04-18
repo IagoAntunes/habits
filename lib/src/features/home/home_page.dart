@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habits/core/colors/colors.dart';
 import 'package:habits/core/months/months.dart';
+import 'package:habits/core/widgets/new_task_button.dart';
 import 'package:habits/src/features/dayTasks/day_tasks_page.dart';
 import 'package:habits/src/models/month_model.dart';
 import 'package:habits/src/models/task_model.dart';
@@ -95,6 +96,26 @@ class _HomePageState extends State<HomePage> {
         return AppColors.purple5;
       }
     }
+  }
+
+  List<TaskModel> getDaysFilter(int index) {
+    List<TaskModel> listAux = [];
+    for (var task in month.list) {
+      if (task.date.day == index + 1) {
+        listAux.add(task);
+      }
+    }
+    return listAux;
+  }
+
+  List<TaskModel> getDaysFilterCurrent() {
+    List<TaskModel> listAux = [];
+    for (var task in month.list) {
+      if (task.date.day == DateTime.now().day) {
+        listAux.add(task);
+      }
+    }
+    return listAux;
   }
 
   @override
@@ -214,48 +235,18 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DayTasksPage(
-                              index: 1,
-                              month: month,
-                            ),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8)),
-                          side: BorderSide(
-                            width: 1,
-                            color: AppColors.purple5,
+                    NewTaskButtonWidget(onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DayTasksPage(
+                            day: DateTime.now().day,
+                            month: month,
+                            listTask: getDaysFilterCurrent(),
                           ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.add,
-                              color: AppColors.purple5,
-                            ),
-                            const SizedBox(width: 5),
-                            const Text(
-                              'Novo',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+                      );
+                    })
                   ],
                 ),
               ),
@@ -275,8 +266,9 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => DayTasksPage(
-                                        index: index,
+                                        day: index,
                                         month: month,
+                                        listTask: getDaysFilter(index),
                                       ),
                                     ),
                                   );
