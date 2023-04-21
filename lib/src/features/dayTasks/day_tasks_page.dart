@@ -118,24 +118,30 @@ class _DayTasksPageState extends State<DayTasksPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.purple3,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NewTaskPage(),
-            ),
-          ).then((value) {
-            if (value != null) {
-              setState(() {
-                widget.listTask.add(value);
-              });
-            }
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton:
+          (widget.isNew ? widget.day : widget.day + 1) == DateTime.now().day &&
+                  widget.month.id == DateTime.now().month
+              ? FloatingActionButton(
+                  backgroundColor: AppColors.purple3,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewTaskPage(),
+                      ),
+                    ).then(
+                      (value) {
+                        if (value != null) {
+                          setState(() {
+                            widget.listTask.add(value);
+                          });
+                        }
+                      },
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                )
+              : null,
     );
   }
 }

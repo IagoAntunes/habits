@@ -15,7 +15,7 @@ class DaysWeekWidget extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              "D",
+              "S",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -26,7 +26,7 @@ class DaysWeekWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              "S",
+              "M",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -48,7 +48,7 @@ class DaysWeekWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              "Q",
+              "W",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -59,7 +59,7 @@ class DaysWeekWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              "Q",
+              "T",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -70,7 +70,7 @@ class DaysWeekWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              "S",
+              "F",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,

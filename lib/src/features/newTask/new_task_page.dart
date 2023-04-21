@@ -7,8 +7,8 @@ import '../../models/habit_model.dart';
 
 class NewTaskPage extends StatelessWidget {
   NewTaskPage({super.key});
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  TextEditingController controller = TextEditingController();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(

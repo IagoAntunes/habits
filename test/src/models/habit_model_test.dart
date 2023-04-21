@@ -14,7 +14,7 @@ void main() {
     'date': DateTime.now().millisecondsSinceEpoch,
     'isFinished': true,
   };
-  test('Teste no model devem ocorrer com sucesso', (() {
+  test('Testing on the model should succeed', (() {
     expect(correctModel, isA<HabitModel>());
     expect(correctModel.toMap(), map);
     expect(HabitModel.fromMap(map), isA<HabitModel>());

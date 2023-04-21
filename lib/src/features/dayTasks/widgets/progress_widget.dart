@@ -4,11 +4,11 @@ import '../../../../core/colors/colors.dart';
 import '../../../models/habit_model.dart';
 
 class ProgressIndicadorWidget extends StatelessWidget {
-  ProgressIndicadorWidget({
+  const ProgressIndicadorWidget({
     super.key,
     required this.listTask,
   });
-  List<HabitModel> listTask;
+  final List<HabitModel> listTask;
   @override
   Widget build(BuildContext context) {
     return Container(
