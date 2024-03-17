@@ -74,7 +74,7 @@ class HomeController {
   List<HabitModel> getDaysFilterCurrent(MonthModel month) {
     List<HabitModel> listAux = [];
     for (var task in month.list) {
-      if (task.date.day == DateTime.now().day) {
+      if (task.date.day == DateTime(2023, 1, 5, 14, 30, 0).day) {
         listAux.add(task);
       }
     }

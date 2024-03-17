@@ -73,18 +73,20 @@ class NewTaskPage extends StatelessWidget {
                     HabitModel task = HabitModel(
                       id: const Uuid().v1(),
                       description: controller.text,
-                      date: DateTime.now(),
+                      date: DateTime(2023, 1, 5, 14, 30, 0),
                       isFinished: false,
                     );
                     await firestore
                         .collection('habits')
                         .doc(task.id)
-                        .set(task.toMap());
-                    Navigator.pop(context, task);
+                        .set(task.toMap())
+                        .then((value) {
+                      Navigator.pop(context, task);
+                    });
                   },
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(Icons.check),
                       SizedBox(width: 5),
                       Text(

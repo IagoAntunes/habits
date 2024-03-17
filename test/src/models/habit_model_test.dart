@@ -5,13 +5,13 @@ void main() {
   HabitModel correctModel = HabitModel(
     id: 'abc123',
     description: 'study',
-    date: DateTime.now(),
+    date: DateTime(2023, 1, 5, 14, 30, 0),
     isFinished: true,
   );
   Map<String, dynamic> map = {
     'id': 'abc123',
     'description': 'study',
-    'date': DateTime.now().millisecondsSinceEpoch,
+    'date': DateTime(2023, 1, 5, 14, 30, 0),
     'isFinished': true,
   };
   test('Testing on the model should succeed', (() {

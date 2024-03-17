@@ -35,7 +35,7 @@ class HeadHabits extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => DayTasksPage(
-                  day: DateTime.now().day,
+                  day: DateTime(2023, 1, 5, 14, 30, 0).day,
                   month: month,
                   listTask: homeController.getDaysFilterCurrent(month),
                   isNew: true,

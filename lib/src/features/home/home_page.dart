@@ -11,6 +11,7 @@ import 'package:habits/src/features/home/widgets/head_habits.dart';
 import 'package:habits/src/features/home/widgets/squares_widget.dart';
 import 'package:habits/src/models/month_model.dart';
 import 'package:habits/src/models/habit_model.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,8 +29,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    month =
-        listMonths.where((element) => element.id == DateTime.now().month).first;
+    month = listMonths
+        .where((element) => element.id == DateTime(2023, 1, 5, 14, 30, 0).month)
+        .first;
     addListeners();
   }
 
@@ -107,9 +109,14 @@ class _HomePageState extends State<HomePage> {
                                   color: homeController
                                       .frequencyBackgroundColor(index, month),
                                   border: Border.all(
-                                    width:
-                                        index + 1 == DateTime.now().day ? 5 : 3,
-                                    color: index + 1 == DateTime.now().day
+                                    width: index + 1 ==
+                                            DateTime(2023, 1, 5, 14, 30, 0)
+                                                    .day +
+                                                2
+                                        ? 5
+                                        : 3,
+                                    color: index + 1 ==
+                                            DateTime(2023, 1, 5, 14, 30, 0).day
                                         ? Colors.white
                                         : homeController.frequencyBorderColor(
                                             index, month),
@@ -125,9 +132,43 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.purple1,
+                    return Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 7,
+                        children: List.generate(month.days, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: Shimmer.fromColors(
+                              baseColor: AppColors.greyDark,
+                              highlightColor:
+                                  AppColors.greyDark.withOpacity(0.3),
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  color: homeController
+                                      .frequencyBackgroundColor(index, month),
+                                  border: Border.all(
+                                    width: index + 1 ==
+                                            DateTime(2023, 1, 5, 14, 30, 0)
+                                                    .day +
+                                                2
+                                        ? 5
+                                        : 3,
+                                    color: index + 1 ==
+                                            DateTime(2023, 1, 5, 14, 30, 0).day
+                                        ? Colors.white
+                                        : homeController.frequencyBorderColor(
+                                            index, month),
+                                  ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                       ),
                     );
                   }

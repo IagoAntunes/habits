@@ -41,8 +41,8 @@ class _DayTasksPageState extends State<DayTasksPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              controller.getNameDay(
-                  DateTime.now().year, widget.month.id, widget.day),
+              controller.getNameDay(DateTime(2023, 1, 5, 14, 30, 0).year,
+                  widget.month.id, widget.day),
               style: TextStyle(
                 fontSize: 16,
                 color: AppColors.greyLight,
@@ -118,30 +118,30 @@ class _DayTasksPageState extends State<DayTasksPage> {
           ],
         ),
       ),
-      floatingActionButton:
-          (widget.isNew ? widget.day : widget.day + 1) == DateTime.now().day &&
-                  widget.month.id == DateTime.now().month
-              ? FloatingActionButton(
-                  backgroundColor: AppColors.purple3,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NewTaskPage(),
-                      ),
-                    ).then(
-                      (value) {
-                        if (value != null) {
-                          setState(() {
-                            widget.listTask.add(value);
-                          });
-                        }
-                      },
-                    );
+      floatingActionButton: (widget.isNew ? widget.day : widget.day + 1) ==
+                  DateTime(2023, 1, 5, 14, 30, 0).day &&
+              widget.month.id == DateTime(2023, 1, 5, 14, 30, 0).month
+          ? FloatingActionButton(
+              backgroundColor: AppColors.purple3,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewTaskPage(),
+                  ),
+                ).then(
+                  (value) {
+                    if (value != null) {
+                      setState(() {
+                        widget.listTask.add(value);
+                      });
+                    }
                   },
-                  child: const Icon(Icons.add),
-                )
-              : null,
+                );
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }
